@@ -1,4 +1,3 @@
-
 name: CI/CD - democyber
 
 on:
@@ -56,6 +55,18 @@ jobs:
       # Build Maven
       - name: Build Java project with Maven
         run: mvn clean package
+
+      # Partie V : SonarCloud (après le build : target/classes doit exister)
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: democyber
+          args: >
+            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.java.binaries=target/classes
 
       # Partie II : Build Docker image
       - name: Build Docker image
